@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="CalculatorServletTest" project="WebCalculator" tests="4" started="4" failures="0" errors="0" ignored="0">
+  <testsuite name="com.mycompany.webcalculator.CalculatorServletTest" time="0.0">
+    <testcase name="testMultiplication" classname="com.mycompany.webcalculator.CalculatorServletTest" time="0.0"/>
+    <testcase name="testAddition" classname="com.mycompany.webcalculator.CalculatorServletTest" time="0.0"/>
+    <testcase name="testDivision" classname="com.mycompany.webcalculator.CalculatorServletTest" time="0.0"/>
+    <testcase name="testSubtraction" classname="com.mycompany.webcalculator.CalculatorServletTest" time="0.0"/>
+  </testsuite>
+</testrun>

@@ -1,0 +1,6 @@
+install_url: "https://artifacts.elastic.co/downloads/kibana/kibana-5.1.1-linux-x86_64.tar.gz"
+installer_artifact_name: "kibana-5.1.1-linux-x86_64.tar.gz"
+install_dir: "/tmp/kibana_installer"
+artifact_dir: "/tmp/kibana_package"
+kibana_dir: "/sites"
+

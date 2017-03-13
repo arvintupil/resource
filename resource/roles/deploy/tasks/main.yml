@@ -1,0 +1,70 @@
+- block:
+
+  - name: Create Directory
+    file: path={{ item }} state=directory mode=0755 recurse=yes
+    with_items:
+      - "{{ install_dir }}"
+      - "{{ deploy_dir }}"
+
+  - name: Ensure that the Jenkins dump workspace are clean
+    shell: rm -rf {{ install_dir }}/** && \
+             rm -rf {{ installer_dir }}/**
+
+  - name: Download Kibana Installer from Net
+    get_url: url={{ install_url }} dest={{ install_dir }} mode=0755
+
+  - name: Download Kibana config from Nexus
+    get_url: url={{ config_url }} dest={{ artifact_dir }} mode=0755 url_username={{ nexus_user }} url_password={{ nexus_password }}
+
+  - name: Download Kibana core plugins from Nexus
+    get_url: url={{ core_url }} dest={{ artifact_dir }} mode=0755 url_username={{ nexus_user }} url_password={{ nexus_password }}
+
+  - name: Download Kibana plugins from Nexus
+    get_url: url={{ plugin_url }} dest={{ artifact_dir }} mode=0755 url_username={{ nexus_user }} url_password={{ nexus_password }}
+
+  - name: Extract downloaded Installer file to the deploy directory
+    unarchive: src={{ install_dir }}/{{ installer_artifact_name }} dest={{ kibana_dir }} copy=no
+    register: extract
+  - debug: var=extract
+
+  - name: Extract downloaded archived file from Nexus to deploy directory
+    unarchive: src={{ install_dir }}/{{ core }} dest={{ artifact_dir }} copy=no
+    register: extract
+  - debug: var=extract
+
+  - name: Extract downloaded archived file from Nexus to deploy directory
+    unarchive: src={{ install_dir }}/{{ config }} dest={{ artifact_dir }} copy=no
+    register: extract
+  - debug: var=extract
+  
+  - name: Extract downloaded archived file from Nexus to config directory
+    unarchive: src={{ artifact_dir }}/{{ plugin }} dest={{ artifact_dir }} copy=no
+    register: extract
+  - debug: var=extract
+
+  - name: Copy config directory to new kibana folder
+    command: cp -Rf {{ artifact_dir }}/config {{ kibana_dir }}/kibana-5.1.1-linux-x86_64/
+    register: copy
+
+  - name: Copy config directory to new kibana folder
+    command: cp -Rf {{ artifact_dir }}/plugins {{ kibana_dir }}/kibana-5.1.1-linux-x86_64/
+    register: copy
+    
+  - debug: var=copy
+  
+  - name: Copy core plugins directory to new kibana folder
+    command: cp -Rf {{ artifact_dir }}core_plugins {{ kibana_dir }}/kibana-5.1.1-linux-x86_64/scr/
+    register: copy
+    
+  - debug: var=copy
+
+  - name: Back up existing kibana folder
+    command: mv {{ kibana_dir }}/kibana {{ kibana_dir }}/backup
+
+  - name: Rename kibana-5.1.1-linux-x86_64 to kibana
+    command: mv {{ kibana_dir }}/kibana-5.1.1-linux-x86_64 {{ kibana_dir }}/kibana
+
+  - name: restart kibana
+    service:
+      name: kibana
+      state: restarted

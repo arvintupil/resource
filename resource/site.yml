@@ -1,0 +1,8 @@
+# kibana_deploy.yml
+# This ansible script performs the deployment of Kibana core plugins environments
+
+#- hosts: dev
+- hosts: dev
+  connection: local
+  roles:
+    - deploy
